@@ -58,3 +58,26 @@ def idiomas(ruta_archivo):
                 idiomas_org[lectura_idioma.capitalize()] += 1 
         return sorted(idiomas_org.items())
 
+# Función para agrupar y contar por tipo de contenido (Jim)
+def tipos_contenido(ruta_archivo):
+    conteos_tipo = {}
+    es_encabezado = True
+
+    with open(ruta_archivo, "r", encoding="utf-8") as archivo:
+        for linea in archivo:
+            if es_encabezado:
+                es_encabezado = False
+                continue
+            
+            columnas = linea.strip().split(",")
+            # Según tu imagen, content_type es la columna índice 4
+            tipo = columnas[4].strip().capitalize()
+            
+            if tipo not in conteos_tipo:
+                conteos_tipo[tipo] = 1
+            else:
+                conteos_tipo[tipo] += 1
+                
+    # Ordenar de mayor a menor frecuencia como pide la guía
+    resultado_ordenado = sorted(conteos_tipo.items(), key=lambda x: x[1], reverse=True)
+    return resultado_ordenado
