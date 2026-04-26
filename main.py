@@ -293,7 +293,7 @@ def tipos_contenido(ruta_archivo):
                 continue
                 
             # Extraemos el tipo de contenido (índice 4)
-            tipo = columnas[4].strip().capitalize()
+            tipo = columnas[-5].strip().capitalize()
             
             if tipo not in conteos_tipo:
                 conteos_tipo[tipo] = 1
