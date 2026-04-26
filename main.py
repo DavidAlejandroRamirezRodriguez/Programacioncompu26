@@ -320,7 +320,8 @@ def ejecutar_menu():
         print("3. Filtrar por umbral de vistas")
         print("4. Analizar frecuencia de un idioma")
         print("5. Ver resumen de todos los idiomas")
-        print("6. Salir")
+        print("6. Ver frecuencia de tipo de Contenido")
+        print("7. Salir")
         print("="*45)
 
         opcion = input("Selecciona una opción (1-6): ")
@@ -356,7 +357,14 @@ def ejecutar_menu():
             for idioma_nom, cantidad in resumen:
                 print(f"- {idioma_nom}: {cantidad} videos")
 
-        elif opcion == '6':
+        elif opcion == "6":
+            print("\nDISTRIBUCIÓN POR TIPO DE CONTENIDO:")
+            resumen_tipo = tipos_contenido(ruta)
+            for tipo, conteos_tipo in resumen_tipo:
+                print(f"- {tipo}: {conteos_tipo} videos")
+
+
+        elif opcion == '7':
             print("\nSaliendo del sistema.")
             break
         else:
