@@ -277,6 +277,33 @@ def idiomas(ruta_archivo):
                 idiomas_org[lectura_idioma.capitalize()] += 1 
         return sorted(idiomas_org.items(), key= lambda items: items[1], reverse= True)
 
+def tipos_contenido(ruta_archivo):
+    conteos_tipo = {}
+    es_encabezado = True
+
+    with open(ruta_archivo, "r", encoding="utf-8") as archivo:
+        for linea in archivo:
+            if es_encabezado:
+                es_encabezado = False
+                continue
+            
+            columnas = linea.strip().split(",")
+            # Validación de seguridad para evitar desbordamiento de índices
+            if len(columnas) < 9:
+                continue
+                
+            # Extraemos el tipo de contenido (índice 4)
+            tipo = columnas[4].strip().capitalize()
+            
+            if tipo not in conteos_tipo:
+                conteos_tipo[tipo] = 1
+            else:
+                conteos_tipo[tipo] += 1
+                
+    # Retornamos la lista ordenada de mayor a menor frecuencia
+    resultado_ordenado = sorted(conteos_tipo.items(), key=lambda x: x[1], reverse=True)
+    return resultado_ordenado
+
 def ejecutar_menu():
     ruta = "youtube_pequeño.csv"
     datos_sistema = cargar_datos(ruta)
