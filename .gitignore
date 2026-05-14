@@ -1,0 +1,6 @@
+# Bytecode (se regenera con python3 main.py)
+__pycache__/
+*.py[cod]
+
+# Opcional: no versionar el resumen generado en cada ejecución
+# resumen.json

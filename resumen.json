@@ -2,24 +2,24 @@
   "total_registros": 1000,
   "unicos_por_campo_texto": {
     "title": 997,
-    "content_type": 13,
-    "detected_language": 9
+    "detected_language": 9,
+    "content_type": 13
   },
   "minimo_por_campo_numerico": {
-    "has_hashtags": 0.0,
-    "views": 1010000000.0,
-    "is_short": 0.0,
     "likes": 0.0,
     "rank": 1.0,
-    "title_length": 6.0
+    "title_length": 6.0,
+    "has_hashtags": 0.0,
+    "is_short": 0.0,
+    "views": 1010000000.0
   },
   "maximo_por_campo_numerico": {
-    "has_hashtags": 1.0,
-    "views": 16800000000.0,
-    "is_short": 1.0,
     "likes": 57600000.0,
     "rank": 1000.0,
-    "title_length": 100.0
+    "title_length": 100.0,
+    "has_hashtags": 1.0,
+    "is_short": 1.0,
+    "views": 16800000000.0
   },
   "columnas_del_dataset": [
     "rank",
