@@ -104,40 +104,55 @@ def guardar_json(ruta_salida, diccionario):
             ensure_ascii=False,
             indent=2,
         )
+        
+''' =====================================================================
+    SECCIÓN: GUARDADO DE RESULTADOS DE CONSULTAS (FUNCIONALIDAD OBLIGATORIA)
+    =====================================================================
+
+Lista constante con los nombres de las columnas para estructurar los datos guardados'''
 
 ENCABEZADOS_DATASET = [
     "rank", "title", "title_length", "detected_language",
     "content_type", "is_short", "has_hashtags", "views", "likes",
 ]
 
+'''Modo 'w' (write) crea el archivo o lo sobreescribe si ya existe'''
 
 def guardar_resultados_csv(filas, ruta_salida):
     with open(ruta_salida, "w", encoding="utf-8", newline="") as archivo:
         escritor = csv.writer(archivo)
+        ''' Escribimos primero la fila de encabezados'''
         escritor.writerow(ENCABEZADOS_DATASET)
+        '''Recorremos la lista de resultados y escribimos fila por fila'''
         for fila in filas:
             escritor.writerow(fila)
     print(f"Resultados guardados en '{ruta_salida}' ({len(filas)} registros).")
 
 
 def guardar_resultados_json(datos, ruta_salida):
-    registros = []
+    registros = [] #Lista principal que contendrá diccionarios
     for fila in datos:
-        registro = {}
+        registro = {} #Creamos un diccionario vacío para esta fila
+        '''Emparejamos cada encabezado con su dato correspondiente
+        enumerate nos da el índice (i) y el valor (encabezado)'''
         for i, encabezado in enumerate(ENCABEZADOS_DATASET):
+            '''Si el índice i existe en la fila, lo asignamos. Si no, ponemos vacío'''
             registro[encabezado] = fila[i] if i < len(fila) else ""
+        '''Agregamos el diccionario terminado a la lista'''
         registros.append(registro)
+    '''Escribimos la estructura resultante en el archivo JSON'''
     with open(ruta_salida, "w", encoding="utf-8") as archivo:
         json.dump(registros, archivo, ensure_ascii=False, indent=2)
     print(f"Resultados guardados en '{ruta_salida}' ({len(datos)} registros).")
 
 
 def cargar_resultados_csv(ruta):
+    """Lee resultados guardados previamente en formato CSV."""
     try:
         filas = []
-        with open(ruta, encoding="utf-8") as archivo:
+        with open(ruta, "r", encoding="utf-8") as archivo:
             lector = csv.reader(archivo)
-            next(lector, None)
+            next(lector, None) #Salta encabezado
             for fila in lector:
                 if len(fila) >= 9:
                     filas.append(fila)
@@ -149,14 +164,18 @@ def cargar_resultados_csv(ruta):
 
 
 def cargar_resultados_json(ruta):
+    """Lee resultados guardados previamente en formato JSON."""
     try:
-        with open(ruta, encoding="utf-8") as archivo:
+        with open(ruta, "r", encoding="utf-8") as archivo:
             registros = json.load(archivo)
         filas = []
         for registro in registros:
+            '''Si guardamos como diccionario, lo volvemos a convertir en lista de valores'''
             if isinstance(registro, dict):
+                '''Extraemos el valor para cada columna basándonos en los encabezados'''
                 fila = [str(registro.get(col, "")) for col in ENCABEZADOS_DATASET]
                 filas.append(fila)
+            '''Si ya venía como lista, lo agregamos directo'''
             elif isinstance(registro, list) and len(registro) >= 9:
                 filas.append(registro)
         print(f"Se cargaron {len(filas)} registros desde '{ruta}'.")
@@ -170,17 +189,27 @@ def cargar_resultados_json(ruta):
 
 
 def preguntar_y_guardar(filas, nombre_sugerido):
+    """
+    Función interactiva que pregunta al usuario si desea guardar una consulta.
+    Orquesta todo el proceso de guardado comunicándose con el usuario.
+    """
+    '''Si la lista de filas está vacía, no hay nada que guardar'''
     if not filas:
         return
+    '''.strip() quita espacios accidentales, .lower() lo pasa a minúscula para evitar errores de tipeo'''
     respuesta = input("\n¿Desea guardar estos resultados? (s/n): ").strip().lower()
-    if respuesta != "s":
+    if respuesta != "s": #Terminamos la función si el usuario no presiona "s"
         return
+    '''Pedimos el nombre del archivo'''
     nombre = input(f"¿Nombre del archivo a guardar? (nombre sugerido: [{nombre_sugerido}]): ").strip()
-    if not nombre:
+    if not nombre: '''Si el usuario solo presiona Enter sin escribir nada, usamos el nombre por defecto'''
         nombre = nombre_sugerido
+    '''Pedimos el formato de guardado'''
     formato = input("¿En que formato desea guardarlos? - ingrese 'csv' o 'json': ").strip().lower()
+    '''Validación: Si escribe cualquier otra cosa, forzamos a que sea CSV por defecto'''
     if formato not in ("csv", "json"):
         formato = "csv"
+    '''Concatenamos el nombre con la extensión final (ej. "resultados.csv")'''
     ruta_salida = f"{nombre}.{formato}"
     if formato == "csv":
         guardar_resultados_csv(filas, ruta_salida)
