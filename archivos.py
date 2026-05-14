@@ -104,3 +104,85 @@ def guardar_json(ruta_salida, diccionario):
             ensure_ascii=False,
             indent=2,
         )
+
+ENCABEZADOS_DATASET = [
+    "rank", "title", "title_length", "detected_language",
+    "content_type", "is_short", "has_hashtags", "views", "likes",
+]
+
+
+def guardar_resultados_csv(filas, ruta_salida):
+    with open(ruta_salida, "w", encoding="utf-8", newline="") as archivo:
+        escritor = csv.writer(archivo)
+        escritor.writerow(ENCABEZADOS_DATASET)
+        for fila in filas:
+            escritor.writerow(fila)
+    print(f"Resultados guardados en '{ruta_salida}' ({len(filas)} registros).")
+
+
+def guardar_resultados_json(datos, ruta_salida):
+    registros = []
+    for fila in datos:
+        registro = {}
+        for i, encabezado in enumerate(ENCABEZADOS_DATASET):
+            registro[encabezado] = fila[i] if i < len(fila) else ""
+        registros.append(registro)
+    with open(ruta_salida, "w", encoding="utf-8") as archivo:
+        json.dump(registros, archivo, ensure_ascii=False, indent=2)
+    print(f"Resultados guardados en '{ruta_salida}' ({len(datos)} registros).")
+
+
+def cargar_resultados_csv(ruta):
+    try:
+        filas = []
+        with open(ruta, encoding="utf-8") as archivo:
+            lector = csv.reader(archivo)
+            next(lector, None)
+            for fila in lector:
+                if len(fila) >= 9:
+                    filas.append(fila)
+        print(f"Se cargaron {len(filas)} registros desde '{ruta}'.")
+        return filas
+    except FileNotFoundError:
+        print(f"No se encontró el archivo '{ruta}'.")
+        return []
+
+
+def cargar_resultados_json(ruta):
+    try:
+        with open(ruta, encoding="utf-8") as archivo:
+            registros = json.load(archivo)
+        filas = []
+        for registro in registros:
+            if isinstance(registro, dict):
+                fila = [str(registro.get(col, "")) for col in ENCABEZADOS_DATASET]
+                filas.append(fila)
+            elif isinstance(registro, list) and len(registro) >= 9:
+                filas.append(registro)
+        print(f"Se cargaron {len(filas)} registros desde '{ruta}'.")
+        return filas
+    except FileNotFoundError:
+        print(f"No se encontró el archivo '{ruta}'.")
+        return []
+    except json.JSONDecodeError as err:
+        print(f"El archivo JSON no es válido: {err}")
+        return []
+
+
+def preguntar_y_guardar(filas, nombre_sugerido):
+    if not filas:
+        return
+    respuesta = input("\n¿Desea guardar estos resultados? (s/n): ").strip().lower()
+    if respuesta != "s":
+        return
+    nombre = input(f"¿Nombre del archivo a guardar? (nombre sugerido: [{nombre_sugerido}]): ").strip()
+    if not nombre:
+        nombre = nombre_sugerido
+    formato = input("¿En que formato desea guardarlos? - ingrese 'csv' o 'json': ").strip().lower()
+    if formato not in ("csv", "json"):
+        formato = "csv"
+    ruta_salida = f"{nombre}.{formato}"
+    if formato == "csv":
+        guardar_resultados_csv(filas, ruta_salida)
+    else:
+        guardar_resultados_json(filas, ruta_salida)
