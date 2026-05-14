@@ -6,7 +6,14 @@ Las funciones de búsqueda y estadísticas viven en analisis.py; la lectura y
 escritura de CSV/JSON en archivos.py, según la estructura sugerida en la guía.
 """
 
-from archivos import cargar_datos, cargar_filas_csv_completo, guardar_json
+from archivos import (
+    cargar_datos,
+    cargar_filas_csv_completo,
+    guardar_json,
+    cargar_resultados_csv,
+    cargar_resultados_json,
+    preguntar_y_guardar,
+)
 from analisis import (
     buscar,
     construir_resumen_dataset,
@@ -48,6 +55,95 @@ def generar_resumen_al_inicio():
         f"({total} registros)."
     )
 
+def _buscar_y_guardar(datos_sistema):
+    """
+    Opción 1: busca un término en el dataset y ofrece guardar los resultados.
+ 
+    Se separa en función propia para que main quede limpio y la lógica de
+    recolección de filas encontradas no mezcle responsabilidades con el menú.
+    """
+    termino = input("Ingresa el término a buscar: ")
+ 
+    # Recolectamos las filas que coinciden para poder ofrecerlas al guardado.
+    filas_encontradas = []
+    for fila in datos_sistema:
+        if termino.lower() in ",".join(fila).lower():
+            print(fila)
+            filas_encontradas.append(fila)
+    print(f"Se encontraron {len(filas_encontradas)} registros.")
+ 
+    # ── Funcionalidad obligatoria 1: ofrecer guardado ──
+    nombre_sugerido = f"busqueda_{termino.replace(' ', '_')}"
+    preguntar_y_guardar(filas_encontradas, nombre_sugerido)
+ 
+ 
+def _filtrar_y_guardar():
+    """
+    Opción 3: filtra por umbral de vistas y ofrece guardar los resultados.
+ 
+    filtrar_por_vistas() de analisis.py imprime pero no devuelve las filas;
+    aquí replicamos la lógica de recolección para poder guardarlas, manteniendo
+    la función original de los compañeros sin modificarla.
+    """
+    from analisis import convertir
+ 
+    print("\n" + "-" * 30)
+    print("FILTRADO PERSONALIZADO")
+    print("-" * 30)
+    try:
+        umbral = float(input("Ingrese el mínimo de vistas a buscar: "))
+    except ValueError:
+        print("\nERROR: Debe ingresar un valor numérico válido.")
+        return
+ 
+    filas_encontradas = []
+    try:
+        with open(RUTA_DATASET, "r", encoding="utf-8") as archivo:
+            next(archivo)
+            for linea in archivo:
+                columnas = linea.strip().split(",")
+                if len(columnas) < 9:
+                    continue
+                if convertir(columnas[-2]) >= umbral:
+                    print(f" * ENCONTRADO: {columnas[1]} ({convertir(columnas[-2]):,.0f} vistas)")
+                    filas_encontradas.append(columnas)
+    except FileNotFoundError:
+        print(f"No se encontró '{RUTA_DATASET}'.")
+        return
+ 
+    if filas_encontradas:
+        print(f"\nSe encontraron {len(filas_encontradas)} resultados.")
+    else:
+        print("\nNo hay videos que superen ese número de vistas.")
+        return
+ 
+    # ── Funcionalidad obligatoria 1: ofrecer guardado ──
+    preguntar_y_guardar(filas_encontradas, f"filtro_{int(umbral)}_vistas")
+ 
+ 
+def _cargar_resultados_guardados():
+    """
+    Opción 8 (nueva): carga un archivo CSV o JSON guardado en sesiones anteriores
+    y muestra sus registros en pantalla sin releer el dataset completo.
+    """
+    print("\n" + "-" * 30)
+    print("CARGAR RESULTADOS GUARDADOS")
+    print("-" * 30)
+    nombre = input("Nombre del archivo a cargar (con extensión .csv o .json): ").strip()
+ 
+    if nombre.lower().endswith(".json"):
+        filas = cargar_resultados_json(nombre)
+    else:
+        filas = cargar_resultados_csv(nombre)
+ 
+    if not filas:
+        return
+    
+    print(f"\n{'─'*45}")
+    for fila in filas:
+        print(fila)
+    print(f"{'─'*45}")
+    print(f"Total mostrado: {len(filas)} registros.")
 
 def ejecutar_menu():
     # Resumen JSON y menú usan el mismo archivo: dataset completo.
@@ -68,14 +164,14 @@ def ejecutar_menu():
         print("4. Analizar frecuencia de un idioma")
         print("5. Ver resumen de todos los idiomas")
         print("6. Ver frecuencia de tipo de Contenido")
-        print("7. Salir")
+        print("7. Cargar resultados guardados")
+        print("8. Salir")
         print("=" * 45)
 
         opcion = input("Selecciona una opción (1-7): ")
 
         if opcion == "1":
-            termino = input("Ingresa el término a buscar: ")
-            buscar(datos_sistema, termino)
+            _buscar_y_guardar(datos_sistema)
 
         elif opcion == "2":
             res = procesar_estadisticas(datos_sistema)
@@ -87,7 +183,9 @@ def ejecutar_menu():
                 print(f"TOTAL VIDEOS: {res['contador']}")
 
         elif opcion == "3":
-            filtrar_por_vistas(RUTA_DATASET)
+            # Reemplaza filtrar_por_vistas() directo para capturar filas
+            # y ofrecer guardado (funcionalidad obligatoria 1).
+            _filtrar_y_guardar()
 
         elif opcion == "4":
             target = input("¿Qué idioma desea contabilizar? ")
@@ -111,6 +209,9 @@ def ejecutar_menu():
                 print(f"- {tipo}: {conteos_tipo} videos")
 
         elif opcion == "7":
+            _cargar_resultados_guardados()
+
+        elif opcion == "8":
             print("\nSaliendo del sistema.")
             break
         else:
