@@ -64,13 +64,13 @@ def _buscar_y_guardar(datos_sistema):
     """
     termino = input("Ingresa el término a buscar: ")
  
-    # Recolectamos las filas que coinciden para poder ofrecerlas al guardado.
-    filas_encontradas = []
-    for fila in datos_sistema:
-        if termino.lower() in ",".join(fila).lower():
-            print(fila)
-            filas_encontradas.append(fila)
-    print(f"Se encontraron {len(filas_encontradas)} registros.")
+    # 1. Llamamos a la lógica de análisis
+    encontrados = buscar(datos_sistema, termino)
+    
+    # 2. UI: Mostramos los resultados en consola
+    for fila in encontrados:
+        print(fila)
+    print(f"\nSe encontraron {len(encontrados)} registros.")
  
     # ── Funcionalidad obligatoria 1: ofrecer guardado ──
     nombre_sugerido = f"busqueda_{termino.replace(' ', '_')}"
@@ -81,44 +81,14 @@ def _filtrar_y_guardar():
     """
     Opción 3: filtra por umbral de vistas y ofrece guardar los resultados.
  
-    filtrar_por_vistas() de analisis.py imprime pero no devuelve las filas;
-    aquí replicamos la lógica de recolección para poder guardarlas, manteniendo
-    la función original de los compañeros sin modificarla.
+    filtrar_por_vistas() de analisis.py hace todo el trabajo, ya que ya lo modificamos para que nos retorne una lista.
     """
-    from analisis import convertir
- 
-    print("\n" + "-" * 30)
-    print("FILTRADO PERSONALIZADO")
-    print("-" * 30)
-    try:
-        umbral = float(input("Ingrese el mínimo de vistas a buscar: "))
-    except ValueError:
-        print("\nERROR: Debe ingresar un valor numérico válido.")
-        return
- 
-    filas_encontradas = []
-    try:
-        with open(RUTA_DATASET, "r", encoding="utf-8") as archivo:
-            next(archivo)
-            for linea in archivo:
-                columnas = linea.strip().split(",")
-                if len(columnas) < 9:
-                    continue
-                if convertir(columnas[-2]) >= umbral:
-                    print(f" * ENCONTRADO: {columnas[1]} ({convertir(columnas[-2]):,.0f} vistas)")
-                    filas_encontradas.append(columnas)
-    except FileNotFoundError:
-        print(f"No se encontró '{RUTA_DATASET}'.")
-        return
- 
-    if filas_encontradas:
-        print(f"\nSe encontraron {len(filas_encontradas)} resultados.")
-    else:
-        print("\nNo hay videos que superen ese número de vistas.")
-        return
- 
-    # ── Funcionalidad obligatoria 1: ofrecer guardado ──
-    preguntar_y_guardar(filas_encontradas, f"filtro_{int(umbral)}_vistas")
+    # Delegamos todo el análisis a tu función original
+    resultados = filtrar_por_vistas(RUTA_DATASET)
+    
+    # Funcionalidad obligatoria 1: ofrecer guardado si hubo resultados
+    if resultados:
+        preguntar_y_guardar(resultados, "filtro_vistas")
  
  
 def _cargar_resultados_guardados():
@@ -130,15 +100,16 @@ def _cargar_resultados_guardados():
     print("CARGAR RESULTADOS GUARDADOS")
     print("-" * 30)
     nombre = input("Nombre del archivo a cargar (con extensión .csv o .json): ").strip()
- 
+
+    # Delegamos la carga a las funciones de archivos.py
     if nombre.lower().endswith(".json"):
         filas = cargar_resultados_json(nombre)
     else:
         filas = cargar_resultados_csv(nombre)
  
     if not filas:
-        return
-    
+        return # Las funciones de archivos ya imprimen sus propios errores
+    # Presentación de datos recuperados
     print(f"\n{'─'*45}")
     for fila in filas:
         print(fila)
