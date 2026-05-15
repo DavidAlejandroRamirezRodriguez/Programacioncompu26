@@ -133,16 +133,19 @@ def construir_resumen_dataset(encabezados, filas):
 
 
 def buscar(datos, termino):
-    """Busca un texto en cualquier columna de cada fila (sin distinguir mayúsculas)."""
-    contador = 0
+    """
+    Busca un término en el dataset y retorna una lista con las filas que coinciden.
+    Esta es la lógica de análisis pura (sin inputs ni prints innecesarios).
+    """
+    encontrados = []
+    termino_lower = termino.lower()
+    
     for fila in datos:
-        fila_completa = ",".join(fila)
-        if termino.lower() in fila_completa.lower():
-            print(fila)
-            contador += 1
-
-    print(f"Se encontraron {contador} registros.")
-
+        # Unimos la fila para buscar el término en cualquier columna
+        if termino_lower in ",".join(fila).lower():
+            encontrados.append(fila)
+            
+    return encontrados
 
 def filtrar_por_vistas(ruta_archivo):
     """Lista en consola los videos cuyas vistas superan un umbral dado por el usuario."""
