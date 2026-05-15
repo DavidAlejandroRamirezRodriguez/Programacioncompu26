@@ -149,16 +149,17 @@ def filtrar_por_vistas(ruta_archivo):
     print("\n" + "-" * 30)
     print("FILTRADO PERSONALIZADO")
     print("-" * 30)
+    filas_encontradas = [] # Creamos la lista
     try:
         umbral = float(input("Ingrese el mínimo de vistas a buscar: "))
 
         with open(ruta_archivo, "r", encoding="utf-8") as archivo:
             next(archivo)
 
-            contador_encontrados = 0
             print(f"\nBuscando videos con {umbral} o más vistas...")
 
             for linea in archivo:
+                # Recorremos y limpiamos con .strip, luego separamos los datos de las columnas por comas ","
                 columnas = linea.strip().split(",")
                 if len(columnas) < 9:
                     continue
@@ -167,17 +168,18 @@ def filtrar_por_vistas(ruta_archivo):
                 vistas_texto = columnas[-2]
                 vistas_numericas = convertir(vistas_texto)
 
-                if vistas_numericas >= umbral:
+                if vistas_numericas >= umbral: #Hacemos el filtro aplicando la función de convertir anteriormente
                     print(f" * ENCONTRADO: {titulo} ({vistas_numericas} vistas)")
-                    contador_encontrados += 1
+                    filas_encontradas.append(columnas) # Guardamos la fila
 
-            if contador_encontrados > 0:
-                print(f"\nSe encontraron {contador_encontrados} resultados.")
+            if filas_encontradas:
+                print(f"\nSe encontraron {len(filas_encontradas)} resultados.")
             else:
                 print("\nNo hay videos que superen ese número de vistas.")
 
     except ValueError:
         print("\nERROR: Debe ingresar un valor numérico válido.")
+        return [] # Más vale prevenir, en caso de error, retornar una lista vacía
 
 
 def procesar_estadisticas(datos):
