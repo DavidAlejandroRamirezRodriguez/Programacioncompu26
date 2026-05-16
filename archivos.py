@@ -6,7 +6,7 @@ para que el menú y el análisis queden separados por responsabilidad.
 
 import csv
 import json
-import datetime
+from datetime import datetime
 from analisis import (
     buscar,
     construir_resumen_dataset,

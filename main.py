@@ -5,8 +5,6 @@ Este archivo solo contiene el menú interactivo y las llamadas a otros módulos.
 Las funciones de búsqueda y estadísticas viven en analisis.py; la lectura y
 escritura de CSV/JSON en archivos.py, según la estructura sugerida en la guía.
 """
-import datetime
-import csv
 
 from archivos import (
     cargar_datos,
