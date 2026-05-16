@@ -5,6 +5,8 @@ Este archivo solo contiene el menú interactivo y las llamadas a otros módulos.
 Las funciones de búsqueda y estadísticas viven en analisis.py; la lectura y
 escritura de CSV/JSON en archivos.py, según la estructura sugerida en la guía.
 """
+import datetime
+import csv
 
 from archivos import (
     cargar_datos,
@@ -13,6 +15,7 @@ from archivos import (
     cargar_resultados_csv,
     cargar_resultados_json,
     preguntar_y_guardar,
+    crear_historial
 )
 from analisis import (
     buscar,
@@ -74,7 +77,8 @@ def _buscar_y_guardar(datos_sistema):
  
     # ── Funcionalidad obligatoria 1: ofrecer guardado ──
     nombre_sugerido = f"busqueda_{termino.replace(' ', '_')}"
-    preguntar_y_guardar(filas_encontradas, nombre_sugerido)
+    preguntar_y_guardar(encontrados, nombre_sugerido)
+    return len(encontrados)
  
  
 def _filtrar_y_guardar():
@@ -115,6 +119,7 @@ def _cargar_resultados_guardados():
         print(fila)
     print(f"{'─'*45}")
     print(f"Total mostrado: {len(filas)} registros.")
+    return len(filas)
 
 def ejecutar_menu():
     # Resumen JSON y menú usan el mismo archivo: dataset completo.
@@ -139,10 +144,12 @@ def ejecutar_menu():
         print("8. Salir")
         print("=" * 45)
 
+    
         opcion = input("Selecciona una opción (1-7): ")
 
         if opcion == "1":
-            _buscar_y_guardar(datos_sistema)
+            numregistros =_buscar_y_guardar(datos_sistema)
+            crear_historial(opcion, numregistros )
 
         elif opcion == "2":
             res = procesar_estadisticas(datos_sistema)
@@ -152,12 +159,15 @@ def ejecutar_menu():
                 print(f"MENOS VISTO: {res['nom_min_v']} ({res['min_v']:,.0f})")
                 print(f"PROMEDIO VISTAS: {res['prom_v']:,.2f}")
                 print(f"TOTAL VIDEOS: {res['contador']}")
+            crear_historial('Ver Estadisticas generales', 4 )
 
         elif opcion == "3":
             # Reemplaza filtrar_por_vistas() directo para capturar filas
             # y ofrecer guardado (funcionalidad obligatoria 1).
             _filtrar_y_guardar()
 
+            crear_historial('3 - Filtrar por umbral de vistas', filtrar_por_vistas(RUTA_DATASET) )
+        
         elif opcion == "4":
             target = input("¿Qué idioma desea contabilizar? ")
             resultado = idioma(RUTA_DATASET, target)
@@ -166,24 +176,27 @@ def ejecutar_menu():
                     print(f"- Existen {cantidad} videos en {idioma_nom}")
                 else:
                     print(f"- Existe {cantidad} video en {idioma_nom}")
+            crear_historial(target, cantidad)
 
         elif opcion == "5":
             resumen = idiomas(RUTA_DATASET)
             print("\nDISTRIBUCIÓN POR IDIOMA:")
             for idioma_nom, cantidad in resumen:
                 print(f"- {idioma_nom}: {cantidad} videos")
+            crear_historial('5 - Distribución por idioma', len(resumen))
 
         elif opcion == "6":
             print("\nDISTRIBUCIÓN POR TIPO DE CONTENIDO:")
             resumen_tipo = tipos_contenido(RUTA_DATASET)
             for tipo, conteos_tipo in resumen_tipo:
                 print(f"- {tipo}: {conteos_tipo} videos")
-
+            crear_historial('6 - Distribución por tipo de contenido', len(resumen_tipo))
         elif opcion == "7":
-            _cargar_resultados_guardados()
-
+            numdatos= _cargar_resultados_guardados()
+            crear_historial('7 - cargar datos guardados', numdatos)
         elif opcion == "8":
             print("\nSaliendo del sistema.")
+            crear_historial('Salir', None)
             break
         else:
             print("\nOpción no válida. Intente de nuevo.")

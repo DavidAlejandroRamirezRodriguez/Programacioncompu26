@@ -6,6 +6,18 @@ para que el menú y el análisis queden separados por responsabilidad.
 
 import csv
 import json
+import datetime
+from analisis import (
+    buscar,
+    construir_resumen_dataset,
+    filtrar_por_vistas,
+    idioma,
+    idiomas,
+    procesar_estadisticas,
+    tipos_contenido,
+)
+
+
 
 
 def cargar_datos(ruta, limite_filas=None):
@@ -214,3 +226,22 @@ def preguntar_y_guardar(filas, nombre_sugerido):
         guardar_resultados_csv(filas, ruta_salida)
     else:
         guardar_resultados_json(filas, ruta_salida)
+
+'''=====================================================================
+    SECCIÓN: HISTORIAL DE CONSULTAS (FUNCIONALIDAD 2 OBLIGATORIA)
+    ====================================================================='''
+
+
+def crear_historial(entrada, Num_entrada):
+    
+    fecha = datetime.now().strftime("%Y-%m-%d %H:%M")
+    with open('historial.csv', 'a', newline='', encoding='utf-8') as historial:
+
+        nueva_linea = csv.writer(historial)
+        nueva_linea.writerow([
+            fecha,
+            entrada, 
+            Num_entrada
+        ])
+
+
