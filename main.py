@@ -24,7 +24,7 @@ from analisis import (
     procesar_estadisticas,
     tipos_contenido,
 )
-from grupo4.historial import ver_historial_interfaz
+
 # Entrega 2: todo el programa trabaja con el dataset completo (200+ filas en la guía; aquí 1000).
 RUTA_DATASET = "youtube_completo.csv"
 # Archivo JSON que se regenera cada vez que se inicia el programa (opcional E2).
@@ -139,11 +139,11 @@ def ejecutar_menu():
         print("5. Ver resumen de todos los idiomas")
         print("6. Ver frecuencia de tipo de Contenido")
         print("7. Cargar resultados guardados")
-        print("8. Ver Historial de Consultas (.csv)") 
-        print("9. Salir")                             
+        print("8. Salir")
         print("=" * 45)
 
-        opcion = input("Selecciona una opción (1-9): ") 
+    
+        opcion = input("Selecciona una opción (1-7): ")
 
         if opcion == "1":
             numregistros =_buscar_y_guardar(datos_sistema)
