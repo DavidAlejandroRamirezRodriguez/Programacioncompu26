@@ -135,7 +135,6 @@ def construir_resumen_dataset(encabezados, filas):
 def buscar(datos, termino):
     """
     Busca un término en el dataset y retorna una lista con las filas que coinciden.
-    Esta es la lógica de análisis pura (sin inputs ni prints innecesarios).
     """
     encontrados = []
     termino_lower = termino.lower()
