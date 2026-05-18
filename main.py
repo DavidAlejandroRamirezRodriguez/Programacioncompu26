@@ -14,6 +14,7 @@ from archivos import (
     cargar_resultados_json,
     preguntar_y_guardar,
     crear_historial,
+    historial_8,
     mostrar_historial,
 )
 from analisis import (
@@ -142,7 +143,7 @@ def ejecutar_menu():
 
         if opcion == "1":
             termino, numregistros = _buscar_y_guardar(datos_sistema)
-            crear_historial(termino, numregistros)
+            crear_historial('1. Buscar registros por: {termino}', numregistros)
 
         elif opcion == "2":
             res = procesar_estadisticas(datos_sistema)
@@ -153,13 +154,13 @@ def ejecutar_menu():
                 print(f"PROMEDIO VISTAS: {res['prom_v']:,.2f}")
                 print(f"TOTAL VIDEOS: {res['contador']}")
             crear_historial(
-                "Ver estadísticas generales",
+                "2. Ver estadísticas generales (Vistas/Likes)",
                 res["contador"] if res else 0,
             )
 
         elif opcion == "3":
             resultados = _filtrar_y_guardar()
-            crear_historial("Filtrar por umbral de vistas", len(resultados))
+            crear_historial("3. Filtrar por umbral de vistas", len(resultados))
 
         elif opcion == "4":
             target = input("¿Qué idioma desea contabilizar? ")
@@ -171,7 +172,7 @@ def ejecutar_menu():
                     print(f"- Existen {cantidad} videos en {idioma_nom}")
                 else:
                     print(f"- Existe {cantidad} video en {idioma_nom}")
-            crear_historial(target, total)
+            crear_historial('4. Analizar frecuencia de un idioma: {target}', total)
 
         elif opcion == "5":
             resumen = idiomas(RUTA_DATASET)
@@ -179,7 +180,7 @@ def ejecutar_menu():
             for idioma_nom, cantidad in resumen:
                 print(f"- {idioma_nom}: {cantidad} videos")
             crear_historial(
-                "Distribución por idioma",
+                "5. Distribución por idioma",
                 sum(c for _, c in resumen),
             )
 
@@ -189,13 +190,15 @@ def ejecutar_menu():
             for tipo, conteos_tipo in resumen_tipo:
                 print(f"- {tipo}: {conteos_tipo} videos")
             crear_historial(
-                "Distribución por tipo de contenido",
+                "6. Distribución por tipo de contenido",
                 sum(c for _, c in resumen_tipo),
             )
         elif opcion == "7":
             numdatos = _cargar_resultados_guardados()
-            crear_historial("Cargar resultados guardados", numdatos or 0)
+            crear_historial("7. Cargar resultados guardados", numdatos or 0)
         elif opcion == "8":
+            conteo = historial_8()
+            crear_historial('8. Ver historial de consultas', conteo)
             mostrar_historial()
         elif opcion == "9":
             print("\nSaliendo del sistema.")

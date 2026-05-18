@@ -21,10 +21,11 @@ Al iniciar se **regenera** `resumen.json` leyendo todas las filas de **`youtube_
 |---------|-----|
 | `main.py` | Menú en consola, constantes de rutas y `generar_resumen_al_inicio()` antes del bucle del menú. |
 | `analisis.py` | `convertir`, búsqueda, estadísticas, filtrado, idiomas, tipos de contenido y `construir_resumen_dataset` (dict, sets por columna de texto, filas como listas). |
-| `archivos.py` | `cargar_datos`, `cargar_filas_csv_completo` (`csv.reader`), `guardar_json` (`json.dump`). |
+| `archivos.py` | `cargar_datos`, `cargar_filas_csv_completo` (`csv.reader`), `guardar_json`, `crear_historial` (`json.dump`). |
 | `youtube_completo.csv` | Dataset activo (1000 filas de datos + encabezado). |
 | `youtube_pequeño.csv` | Subconjunto de referencia (Entrega 1); el programa de E2 **no** lo usa por defecto. |
 | `resumen.json` | Generado al ejecutar: estadísticas globales del CSV completo (se puede ignorar en Git si el equipo prefiere). |
+| `historial.csv`| Generado desde antes: Aqui se almacena cada opción que digita el usuario y la cantidad de registros encontrados
 
 ## `resumen.json` (opcional Entrega 2)
 

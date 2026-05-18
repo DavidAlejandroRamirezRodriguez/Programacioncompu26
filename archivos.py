@@ -244,6 +244,17 @@ def crear_historial(entrada, num_resultados):
         nueva_linea = csv.writer(historial)
         nueva_linea.writerow([fecha, entrada, resultados])
 
+def historial_8():
+
+    '''
+        Función para que cuente cuantos datos de interes se encontraron
+        (inputs del usuario), sin contar la linea de encabezados.
+    '''
+    with open('historial.csv', 'r', encoding='utf_8') as historial:
+        resultado = len(list(csv.reader(historial)))-1
+    return resultado
+
+
 
 def mostrar_historial(ruta="historial.csv"):
     """Muestra en consola las consultas registradas en el archivo de log."""
