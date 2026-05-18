@@ -251,7 +251,9 @@ def historial_8():
         (inputs del usuario), sin contar la linea de encabezados.
     '''
     with open('historial.csv', 'r', encoding='utf_8') as historial:
-        resultado = len(list(csv.reader(historial)))-1
+        lector = csv.reader(historial)
+        next(lector, None)
+        resultado = len(list(lector))+1
     return resultado
 
 
