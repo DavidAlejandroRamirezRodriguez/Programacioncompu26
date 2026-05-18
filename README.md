@@ -52,10 +52,18 @@ Vistas y likes en el resumen usan la misma lógica que el menú (`convertir` con
 | `views` | Vistas (texto con K/M/B) |
 | `likes` | Likes (texto con K/M/B) |
 
-## Reparto en el equipo
+## Estructura de datos utilizadas
 
-- **Este bloque:** resumen automático del dataset en JSON, modularización (`main` / `analisis` / `archivos`), carga con `csv`/`json` sin Pandas.
-- **Otros integrantes:** obligatorias de E2 (guardar/recuperar resultados e historial de consultas), según acuerdo del grupo.
+- **Listas(`list`):** Para almacenar las matrices de datos al cargar el CSV y para recolectar las filas encontradas en las búsquedas.
+- **Diccionarios(`dict`):** Para construir el `resumen.json`, organizar los datos antes de exportarlos a JSON, y realizar conteos de frecuencias (idiomas y tipos de contenido).
+- **Conjuntos(`set`):** Utilizados en `analisis.py` para extraer valores únicos eficientemente en las columnas de texto sin repetir datos.
+
+## Reparto en el equipo para los implementos de la entrega 2
+
+- **Grupo 1:** Funcionalidad obligatoria 1, guardar/recuperar resultados de las consultas hechas por el ususario.
+- **Grupo 2:** Funcionalidad obligatoria 2, historial de consultas que se guarda en el historial.csv para que el usuario tenga seguimiento de sus búsquedas.
+- **Grupo 3:** resumen automático del dataset en JSON, modularización (`main` / `analisis` / `archivos`), carga con `csv`/`json` sin Pandas.
+- **Grupo 4:** Actualización del README.md y desarrollo del producto creativo (diagrama de flujo) para visualizar transporte de los datos desde su carga hasta que se almacenan.
 
 ## Preguntas del proyecto
 
