@@ -182,8 +182,7 @@ def filtrar_por_vistas(ruta_archivo):
     except ValueError:
         print("\nERROR: Debe ingresar un valor numérico válido.")
         return [] # Más vale prevenir, en caso de error, retornar una lista vacía
-    cantidad =len(filas_encontradas)
-    return cantidad
+    return filas_encontradas
 
 
 def procesar_estadisticas(datos):

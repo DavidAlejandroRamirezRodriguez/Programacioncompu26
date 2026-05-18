@@ -232,16 +232,38 @@ def preguntar_y_guardar(filas, nombre_sugerido):
     ====================================================================='''
 
 
-def crear_historial(entrada, Num_entrada):
-    
+def crear_historial(entrada, num_resultados):
     fecha = datetime.now().strftime("%Y-%m-%d %H:%M")
-    with open('historial.csv', 'a', newline='', encoding='utf-8') as historial:
-
+    if num_resultados is None:
+        resultados = ""
+    elif isinstance(num_resultados, str):
+        resultados = num_resultados
+    else:
+        resultados = f"{num_resultados} resultados"
+    with open("historial.csv", "a", newline="", encoding="utf-8") as historial:
         nueva_linea = csv.writer(historial)
-        nueva_linea.writerow([
-            fecha,
-            entrada, 
-            Num_entrada
-        ])
+        nueva_linea.writerow([fecha, entrada, resultados])
+
+
+def mostrar_historial(ruta="historial.csv"):
+    """Muestra en consola las consultas registradas en el archivo de log."""
+    try:
+        with open(ruta, encoding="utf-8") as archivo:
+            filas = list(csv.reader(archivo))
+    except FileNotFoundError:
+        print("\nNo hay historial todavía (aún no se ha registrado ninguna consulta).")
+        return
+    if len(filas) <= 1:
+        print("\nNo hay consultas registradas en el historial.")
+        return
+    print("\n" + "=" * 45)
+    print("         HISTORIAL DE CONSULTAS")
+    print("=" * 45)
+    for fila in filas[1:]:
+        if len(fila) >= 3:
+            print(f'{fila[0]}, "{fila[1]}", {fila[2]}')
+        elif fila:
+            print(", ".join(fila))
+    print("=" * 45)
 
 

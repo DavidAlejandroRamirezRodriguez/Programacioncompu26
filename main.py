@@ -13,7 +13,8 @@ from archivos import (
     cargar_resultados_csv,
     cargar_resultados_json,
     preguntar_y_guardar,
-    crear_historial
+    crear_historial,
+    mostrar_historial,
 )
 from analisis import (
     buscar,
@@ -76,21 +77,15 @@ def _buscar_y_guardar(datos_sistema):
     # ── Funcionalidad obligatoria 1: ofrecer guardado ──
     nombre_sugerido = f"busqueda_{termino.replace(' ', '_')}"
     preguntar_y_guardar(encontrados, nombre_sugerido)
-    return len(encontrados)
- 
- 
+    return termino, len(encontrados)
+
+
 def _filtrar_y_guardar():
-    """
-    Opción 3: filtra por umbral de vistas y ofrece guardar los resultados.
- 
-    filtrar_por_vistas() de analisis.py hace todo el trabajo, ya que ya lo modificamos para que nos retorne una lista.
-    """
-    # Delegamos todo el análisis a tu función original
+    """Opción 3: filtra por umbral de vistas y ofrece guardar los resultados."""
     resultados = filtrar_por_vistas(RUTA_DATASET)
-    
-    # Funcionalidad obligatoria 1: ofrecer guardado si hubo resultados
     if resultados:
         preguntar_y_guardar(resultados, "filtro_vistas")
+    return resultados
  
  
 def _cargar_resultados_guardados():
@@ -139,15 +134,15 @@ def ejecutar_menu():
         print("5. Ver resumen de todos los idiomas")
         print("6. Ver frecuencia de tipo de Contenido")
         print("7. Cargar resultados guardados")
-        print("8. Salir")
+        print("8. Ver historial de consultas")
+        print("9. Salir")
         print("=" * 45)
 
-    
-        opcion = input("Selecciona una opción (1-7): ")
+        opcion = input("Selecciona una opción (1-9): ")
 
         if opcion == "1":
-            numregistros =_buscar_y_guardar(datos_sistema)
-            crear_historial(opcion, numregistros )
+            termino, numregistros = _buscar_y_guardar(datos_sistema)
+            crear_historial(termino, numregistros)
 
         elif opcion == "2":
             res = procesar_estadisticas(datos_sistema)
@@ -157,44 +152,54 @@ def ejecutar_menu():
                 print(f"MENOS VISTO: {res['nom_min_v']} ({res['min_v']:,.0f})")
                 print(f"PROMEDIO VISTAS: {res['prom_v']:,.2f}")
                 print(f"TOTAL VIDEOS: {res['contador']}")
-            crear_historial('Ver Estadisticas generales', 4 )
+            crear_historial(
+                "Ver estadísticas generales",
+                res["contador"] if res else 0,
+            )
 
         elif opcion == "3":
-            # Reemplaza filtrar_por_vistas() directo para capturar filas
-            # y ofrecer guardado (funcionalidad obligatoria 1).
-            _filtrar_y_guardar()
+            resultados = _filtrar_y_guardar()
+            crear_historial("Filtrar por umbral de vistas", len(resultados))
 
-            crear_historial('3 - Filtrar por umbral de vistas', filtrar_por_vistas(RUTA_DATASET) )
-        
         elif opcion == "4":
             target = input("¿Qué idioma desea contabilizar? ")
             resultado = idioma(RUTA_DATASET, target)
+            total = 0
             for idioma_nom, cantidad in resultado:
+                total = cantidad
                 if cantidad != 1:
                     print(f"- Existen {cantidad} videos en {idioma_nom}")
                 else:
                     print(f"- Existe {cantidad} video en {idioma_nom}")
-            crear_historial(target, cantidad)
+            crear_historial(target, total)
 
         elif opcion == "5":
             resumen = idiomas(RUTA_DATASET)
             print("\nDISTRIBUCIÓN POR IDIOMA:")
             for idioma_nom, cantidad in resumen:
                 print(f"- {idioma_nom}: {cantidad} videos")
-            crear_historial('5 - Distribución por idioma', len(resumen))
+            crear_historial(
+                "Distribución por idioma",
+                sum(c for _, c in resumen),
+            )
 
         elif opcion == "6":
             print("\nDISTRIBUCIÓN POR TIPO DE CONTENIDO:")
             resumen_tipo = tipos_contenido(RUTA_DATASET)
             for tipo, conteos_tipo in resumen_tipo:
                 print(f"- {tipo}: {conteos_tipo} videos")
-            crear_historial('6 - Distribución por tipo de contenido', len(resumen_tipo))
+            crear_historial(
+                "Distribución por tipo de contenido",
+                sum(c for _, c in resumen_tipo),
+            )
         elif opcion == "7":
-            numdatos= _cargar_resultados_guardados()
-            crear_historial('7 - cargar datos guardados', numdatos)
+            numdatos = _cargar_resultados_guardados()
+            crear_historial("Cargar resultados guardados", numdatos or 0)
         elif opcion == "8":
+            mostrar_historial()
+        elif opcion == "9":
             print("\nSaliendo del sistema.")
-            crear_historial('Salir', None)
+            crear_historial("Salir", None)
             break
         else:
             print("\nOpción no válida. Intente de nuevo.")
