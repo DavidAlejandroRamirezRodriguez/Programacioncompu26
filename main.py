@@ -143,7 +143,7 @@ def ejecutar_menu():
 
         if opcion == "1":
             termino, numregistros = _buscar_y_guardar(datos_sistema)
-            crear_historial('1. Buscar registros por: {termino}', numregistros)
+            crear_historial(f'1. Buscar registros por: {termino}', numregistros)
 
         elif opcion == "2":
             res = procesar_estadisticas(datos_sistema)
