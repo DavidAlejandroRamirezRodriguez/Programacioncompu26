@@ -342,3 +342,15 @@ def tipos_contenido(ruta_archivo):
                 conteos_tipo[tipo] += 1
 
     return sorted(conteos_tipo.items(), key=lambda x: x[1], reverse=True)
+
+import pandas as pd
+
+def obtener_datos_graficos_pandas(ruta_archivo):
+    # Cargamos el dataset con pandas como exige la guía para la entrega final
+    df = pd.read_csv(ruta_archivo)
+    
+    # Usamos value_counts de pandas para sacar las frecuencias sin usar ciclos for
+    conteos_tipo = df['content_type'].value_counts().items()
+    conteos_idioma = df['detected_language'].value_counts().items()
+    
+    return list(conteos_tipo), list(conteos_idioma)
