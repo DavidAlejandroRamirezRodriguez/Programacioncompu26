@@ -18,7 +18,11 @@ Regla del curso: no escribir lógica de análisis aquí (sin for sobre el datase
 #
 # from analisis import buscar, procesar_estadisticas, idiomas, tipos_contenido, ...
 # from archivos import cargar_datos, guardar_resultados_csv, crear_historial, ...
-
+import sys
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QSizePolicy
+from analisis import obtener_datos_graficos_pandas
 
 def main():
     """Punto de entrada de la interfaz gráfica."""
