@@ -423,10 +423,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    from PyQt5.QtWidgets import QApplication
-    app = QApplication(sys.argv)
-    panel = PanelGraficos("youtube_completo.csv")
-    panel.setWindowTitle("Panel Gráficos — prueba")
-    panel.resize(800, 700)
-    panel.show()
-    sys.exit(app.exec_())
+  
