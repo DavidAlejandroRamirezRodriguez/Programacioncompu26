@@ -33,7 +33,7 @@ from analisis import (
     idiomas,
     tipos_contenido,
 )
-from archivos import cargar_filas_csv_completo
+from archivos import cargar_filas_csv_completo, obtener_historial
 
 # ── Colores (deben coincidir con los de PERSONA_1) ───────────────────────────
 COLOR_FONDO   = "#0F0F0F"
@@ -180,6 +180,15 @@ class PanelFuncionalidades(QWidget):
         fila_filtro.addWidget(btn_filtrar)
         layout.addLayout(fila_filtro)
 
+        # ── Historial ────────────────────────────────────────────────────
+        layout.addWidget(_separador())
+        layout.addWidget(self._lbl_seccion("Historial (E2)"))
+
+        btn_historial = QPushButton("🕑  Ver historial de consultas")
+        btn_historial.setStyleSheet(ESTILO_BTN_NORMAL)
+        btn_historial.clicked.connect(self._accion_historial)
+        layout.addWidget(btn_historial)
+
         # ── Exportar CSV ─────────────────────────────────────────────────
         layout.addWidget(_separador())
         btn_exportar = QPushButton("💾  Exportar último resultado a CSV")
@@ -286,6 +295,19 @@ class PanelFuncionalidades(QWidget):
             lineas.append(f"  • {fila[1]}  ({fila[-2]})")
         if len(resultados) > 30:
             lineas.append(f"  … y {len(resultados) - 30} más.")
+        self._mostrar("\n".join(lineas))
+
+    def _accion_historial(self):
+        filas = obtener_historial()
+        if not filas:
+            self._mostrar("No hay consultas registradas en el historial.")
+            return
+        lineas = [f"🕑 HISTORIAL DE CONSULTAS ({len(filas)} entradas):\n"]
+        for fila in filas:
+            if len(fila) >= 3:
+                lineas.append(f"  {fila[0]}  |  {fila[1]}  |  {fila[2]}")
+            elif fila:
+                lineas.append("  " + ", ".join(fila))
         self._mostrar("\n".join(lineas))
 
     def _accion_exportar_csv(self):

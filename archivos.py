@@ -258,6 +258,16 @@ def historial_8():
 
 
 
+def obtener_historial(ruta="historial.csv"):
+    """Retorna las filas del historial como lista de listas, sin encabezado."""
+    try:
+        with open(ruta, encoding="utf-8") as archivo:
+            filas = list(csv.reader(archivo))
+    except FileNotFoundError:
+        return []
+    return filas[1:] if len(filas) > 1 else []
+
+
 def mostrar_historial(ruta="historial.csv"):
     """Muestra en consola las consultas registradas en el archivo de log."""
     try:
