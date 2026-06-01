@@ -264,10 +264,10 @@ class LienzoGraficos(FigureCanvas):
 
         etiquetas = [e[0] for e in datos]
         valores   = [e[1] for e in datos]
-        colores   = PALETA[:len(etiquetas)]
+        colores   = [PALETA[i % len(PALETA)] for i in range(len(etiquetas))]
 
         if "Otros" in etiquetas:
-            colores[etiquetas.index("Otros")] = "#999999"
+            colores[-1] = "#AAAAAA"
 
         wedges, _, autotexts = ax.pie(
             valores,
