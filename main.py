@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QApplication
  
 from ventana_principal   import VentanaPrincipal, RUTA_CSV
 from panel_funcionalidades import PanelFuncionalidades
-from panel_graficos        import PanelGraficos
+from interfaz              import PanelGraficos
  
  
 def main():
