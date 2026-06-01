@@ -41,19 +41,19 @@ from archivos import (
 )
 
 # ── Colores (deben coincidir con los de PERSONA_1) ───────────────────────────
-COLOR_FONDO   = "#0F0F0F"
-COLOR_PANEL   = "#1A1A1A"
-COLOR_TEXTO   = "#FFFFFF"
-COLOR_SUAVE   = "#AAAAAA"
-COLOR_BORDE   = "#333333"
+COLOR_FONDO   = "#F5F5F5"
+COLOR_PANEL   = "#FFFFFF"
+COLOR_TEXTO   = "#1A1A1A"
+COLOR_SUAVE   = "#666666"
+COLOR_BORDE   = "#E0E0E0"
 COLOR_ACENTO  = "#4C72B0"
-COLOR_OK      = "#55A868"
+COLOR_OK      = "#2E7D32"
 COLOR_ERROR   = "#C44E52"
 
 ESTILO_BTN_ACCION = f"""
     QPushButton {{
         background-color: {COLOR_ACENTO};
-        color: {COLOR_TEXTO};
+        color: #FFFFFF;
         border: none;
         border-radius: 6px;
         padding: 7px 0;
@@ -72,19 +72,19 @@ ESTILO_BTN_NORMAL = f"""
         padding: 7px 0;
         font-size: 12px;
     }}
-    QPushButton:hover {{ background-color: #252525; border-color: {COLOR_ACENTO}; }}
+    QPushButton:hover {{ background-color: #E8F0FE; border-color: {COLOR_ACENTO}; color: {COLOR_ACENTO}; }}
 """
 ESTILO_BTN_EXPORTAR = f"""
     QPushButton {{
-        background-color: #1e3a1e;
+        background-color: #E8F5E9;
         color: {COLOR_OK};
-        border: 1px solid #2a5a2a;
+        border: 1px solid #A5D6A7;
         border-radius: 6px;
         padding: 7px 0;
         font-size: 12px;
         font-weight: bold;
     }}
-    QPushButton:hover {{ background-color: #254a25; }}
+    QPushButton:hover {{ background-color: #C8E6C9; }}
 """
 
 
@@ -137,13 +137,13 @@ class PanelFuncionalidades(QWidget):
         )
         self.campo_busqueda.returnPressed.connect(self._accion_buscar)
 
-        btn_buscar = QPushButton("Buscar")
-        btn_buscar.setFixedWidth(72)
-        btn_buscar.setStyleSheet(ESTILO_BTN_ACCION)
-        btn_buscar.clicked.connect(self._accion_buscar)
+        self._btn_buscar = QPushButton("Buscar")
+        self._btn_buscar.setFixedWidth(72)
+        self._btn_buscar.setStyleSheet(ESTILO_BTN_ACCION)
+        self._btn_buscar.clicked.connect(self._accion_buscar)
 
         fila_busqueda.addWidget(self.campo_busqueda)
-        fila_busqueda.addWidget(btn_buscar)
+        fila_busqueda.addWidget(self._btn_buscar)
         layout.addLayout(fila_busqueda)
 
         # ── Sección Análisis ─────────────────────────────────────────────
@@ -176,6 +176,7 @@ class PanelFuncionalidades(QWidget):
             f"background:{COLOR_PANEL}; color:{COLOR_TEXTO}; "
             f"border:1px solid {COLOR_BORDE}; border-radius:5px; padding:5px 8px;"
         )
+
         btn_filtrar = QPushButton("Filtrar")
         btn_filtrar.setFixedWidth(72)
         btn_filtrar.setStyleSheet(ESTILO_BTN_NORMAL)
@@ -203,10 +204,10 @@ class PanelFuncionalidades(QWidget):
         btn_cargar.clicked.connect(self._accion_cargar_resultados)
         layout.addWidget(btn_cargar)
 
-        btn_exportar = QPushButton("💾  Exportar último resultado a CSV")
-        btn_exportar.setStyleSheet(ESTILO_BTN_EXPORTAR)
-        btn_exportar.clicked.connect(self._accion_exportar_csv)
-        layout.addWidget(btn_exportar)
+        self._btn_exportar = QPushButton("💾  Exportar último resultado a CSV")
+        self._btn_exportar.setStyleSheet(ESTILO_BTN_EXPORTAR)
+        self._btn_exportar.clicked.connect(self._accion_exportar_csv)
+        layout.addWidget(self._btn_exportar)
 
         # ── Área de resultados ───────────────────────────────────────────
         layout.addWidget(_separador())
@@ -308,6 +309,51 @@ class PanelFuncionalidades(QWidget):
         if len(resultados) > 30:
             lineas.append(f"  … y {len(resultados) - 30} más.")
         self._mostrar("\n".join(lineas))
+
+    def set_tema(self, oscuro: bool):
+        from interfaz import TEMAS
+        t = TEMAS["oscuro"] if oscuro else TEMAS["claro"]
+        acento = t["acento"]
+        ok = "#55A868"
+        bg_ok = "#1e3a1e" if oscuro else "#E8F5E9"
+        borde_ok = "#2a5a2a" if oscuro else "#A5D6A7"
+
+        for btn in self.findChildren(QPushButton):
+            btn.setStyleSheet("")
+
+        self.setStyleSheet(f"""
+            QWidget {{ background-color: {t['fondo']}; color: {t['texto']}; }}
+            QPushButton {{
+                background-color: {t['panel']}; color: {t['texto']};
+                border: 1px solid {t['borde']}; border-radius: 6px;
+                padding: 7px 0; font-size: 12px;
+            }}
+            QPushButton:hover {{
+                background-color: {acento}; color: #FFFFFF; border-color: {acento};
+            }}
+            QLineEdit {{
+                background: {t['panel']}; color: {t['texto']};
+                border: 1px solid {t['borde']}; border-radius: 5px; padding: 5px 8px;
+            }}
+            QTextEdit {{
+                background: {t['panel']}; color: {t['texto']};
+                border: 1px solid {t['borde']}; border-radius: 6px; padding: 6px;
+                font-family: 'Consolas', 'Courier New', monospace; font-size: 11px;
+            }}
+            QFrame {{ border-top: 1px solid {t['borde']}; }}
+        """)
+
+        self._btn_buscar.setStyleSheet(f"""
+            QPushButton {{ background-color: {acento}; color: #FFFFFF; border: none;
+                border-radius: 6px; padding: 7px 0; font-size: 12px; font-weight: bold; }}
+            QPushButton:hover {{ background-color: #3a5a9a; }}
+        """)
+        self._btn_exportar.setStyleSheet(f"""
+            QPushButton {{ background-color: {bg_ok}; color: {ok};
+                border: 1px solid {borde_ok}; border-radius: 6px;
+                padding: 7px 0; font-size: 12px; font-weight: bold; }}
+            QPushButton:hover {{ background-color: {'#254a25' if oscuro else '#C8E6C9'}; }}
+        """)
 
     def _accion_cargar_resultados(self):
         ruta, _ = QFileDialog.getOpenFileName(
