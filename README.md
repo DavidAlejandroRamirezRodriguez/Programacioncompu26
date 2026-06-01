@@ -1,42 +1,43 @@
-# DataLab — Entrega 2 (Analizador)
+# DataLab — Entrega Final (DataLab Hub)
 
 **Curso:** Programación de Computadores 2026-1 — Universidad Nacional de Colombia  
+**Grupo:** Los silenciosos  
 **Dataset:** Top 1000 Most Watched YouTube Videos (2026) — [Kaggle](https://www.kaggle.com/datasets/mubashirsidiki/most-watched-yt-videos-rankings-2026)
 
+## Requisitos
+
+```bash
+pip install PyQt5 pandas matplotlib
+```
+
 ## Cómo ejecutar
-
-Requisito: **Python 3.x** (sin Pandas ni otras librerías externas para esta entrega).
-
-Desde la carpeta del proyecto:
 
 ```bash
 python3 main.py
 ```
 
-Al iniciar se **regenera** `resumen.json` leyendo todas las filas de **`youtube_completo.csv`**. El menú (búsqueda, estadísticas, opciones 3–6) usa el **mismo dataset completo** en memoria o por ruta, según la opción.
+Se abre la interfaz gráfica con dos paneles: funcionalidades a la izquierda (búsqueda, estadísticas, filtrado, exportar) y visualizaciones a la derecha (gráfico de idiomas y gráfico de tipos de contenido).
 
-## Estructura de archivos (Entrega 2)
+Para ejecutar el menú de consola (Entrega 2):
+
+```bash
+python3 menu_consola.py
+```
+
+## Estructura de archivos
 
 | Archivo | Rol |
 |---------|-----|
-| `main.py` | Menú en consola, constantes de rutas y `generar_resumen_al_inicio()` antes del bucle del menú. |
-| `analisis.py` | `convertir`, búsqueda, estadísticas, filtrado, idiomas, tipos de contenido y `construir_resumen_dataset` (dict, sets por columna de texto, filas como listas). |
-| `archivos.py` | `cargar_datos`, `cargar_filas_csv_completo` (`csv.reader`), `guardar_json`, `crear_historial` (`json.dump`). |
+| `main.py` | Lanza la interfaz gráfica PyQt5. |
+| `interfaz.py` | Ventana principal, panel de gráficos y widgets de PyQt5. Solo capa visual. |
+| `panel_funcionalidades.py` | Panel lateral con búsqueda, estadísticas, filtrado y exportación. Solo capa visual. |
+| `analisis.py` | Funciones de búsqueda, estadísticas, filtrado, idiomas, tipos de contenido y resumen del dataset. |
+| `archivos.py` | Carga y escritura de CSV/JSON, historial de consultas. |
+| `menu_consola.py` | Menú interactivo de consola (Entrega 2). |
 | `youtube_completo.csv` | Dataset activo (1000 filas de datos + encabezado). |
-| `youtube_pequeño.csv` | Subconjunto de referencia (Entrega 1); el programa de E2 **no** lo usa por defecto. |
-| `resumen.json` | Generado al ejecutar: estadísticas globales del CSV completo (se puede ignorar en Git si el equipo prefiere). |
-| `historial.csv`| Generado desde antes: Aqui se almacena cada opción que digita el usuario y la cantidad de registros encontrados
-
-## `resumen.json` (opcional Entrega 2)
-
-Se escribe al arrancar, sin preguntar al usuario. Incluye entre otras:
-
-- `total_registros`
-- `unicos_por_campo_texto` (conteos de valores distintos en columnas de texto definidas en código)
-- `minimo_por_campo_numerico` / `maximo_por_campo_numerico`
-- `columnas_del_dataset`
-
-Vistas y likes en el resumen usan la misma lógica que el menú (`convertir` con sufijos K/M/B).
+| `youtube_pequeño.csv` | Subconjunto de 50 filas (Entrega 1). |
+| `historial.csv` | Generado automáticamente: registra cada consulta con fecha y resultados. |
+| `resumen.json` | Generado automáticamente al correr el menú de consola: estadísticas globales del dataset. |
 
 ## Columnas del CSV
 
@@ -52,18 +53,11 @@ Vistas y likes en el resumen usan la misma lógica que el menú (`convertir` con
 | `views` | Vistas (texto con K/M/B) |
 | `likes` | Likes (texto con K/M/B) |
 
-## Estructura de datos utilizadas
+## Librerías utilizadas
 
-- **Listas(`list`):** Para almacenar las matrices de datos al cargar el CSV y para recolectar las filas encontradas en las búsquedas.
-- **Diccionarios(`dict`):** Para construir el `resumen.json`, organizar los datos antes de exportarlos a JSON, y realizar conteos de frecuencias (idiomas y tipos de contenido).
-- **Conjuntos(`set`):** Utilizados en `analisis.py` para extraer valores únicos eficientemente en las columnas de texto sin repetir datos.
-
-## Reparto en el equipo para los implementos de la entrega 2
-
-- **Grupo 1:** Funcionalidad obligatoria 1, guardar/recuperar resultados de las consultas hechas por el ususario.
-- **Grupo 2:** Funcionalidad obligatoria 2, historial de consultas que se guarda en el historial.csv para que el usuario tenga seguimiento de sus búsquedas.
-- **Grupo 3:** resumen automático del dataset en JSON, modularización (`main` / `analisis` / `archivos`), carga con `csv`/`json` sin Pandas.
-- **Grupo 4:** Actualización del README.md y desarrollo del producto creativo (diagrama de flujo) para visualizar transporte de los datos desde su carga hasta que se almacenan.
+- **PyQt5:** interfaz gráfica (ventana, botones, campos de texto, área de resultados).
+- **Pandas:** carga del dataset para los gráficos (`pd.read_csv`).
+- **Matplotlib:** gráficos embebidos en la ventana (barras de idiomas y torta de tipos de contenido).
 
 ## Preguntas del proyecto
 
