@@ -4,7 +4,7 @@ DataLab — consola (Entrega 2).
 Menú interactivo de consola. Las funciones de búsqueda y estadísticas viven
 en analisis.py; la lectura y escritura de CSV/JSON en archivos.py.
 
-Ejecutar con: python menu_consola.py
+Ejecutar con: python main.py
 """
 
 from archivos import (
