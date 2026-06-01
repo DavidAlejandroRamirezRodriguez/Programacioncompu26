@@ -27,10 +27,14 @@ source venv/bin/activate        # Linux / macOS
 pip install -r requirements.txt
 ```
 
+> **Windows:** si `pip` no se reconoce, usa `python -m pip install -r requirements.txt`
+
 Si no usas entorno virtual, instala directamente:
 
 ```bash
 pip install PyQt5 pandas matplotlib
+# Windows (si pip no funciona):
+python -m pip install PyQt5 pandas matplotlib
 ```
 
 ## Cómo ejecutar
