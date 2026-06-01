@@ -137,14 +137,6 @@ class VentanaPrincipal(QMainWindow):
         #    Persona 3 llena self.panel_graficos
         self.splitter = QSplitter(Qt.Horizontal)
         self.splitter.setHandleWidth(2)
-
-        # Placeholders temporales — Persona 2 y 3 reemplazan estos widgets
-        self.panel_funcionalidades = self._placeholder("Persona 2:\nFuncionalidades / Búsqueda / Estadísticas")
-        self.panel_graficos        = self._placeholder("Persona 3:\nGráficos Matplotlib embebidos")
-
-        self.splitter.addWidget(self.panel_funcionalidades)
-        self.splitter.addWidget(self.panel_graficos)
-        self.splitter.setSizes([370, 730])   # Panel izquierdo más estrecho
         layout_raiz.addWidget(self.splitter, stretch=1)
 
         # 3) Barra de estado
@@ -153,26 +145,14 @@ class VentanaPrincipal(QMainWindow):
     
 
     def insertar_panel_funcionalidades(self, widget):
-        """
-        Persona 2 llama a este método para reemplazar el placeholder.
-        Ejemplo en main.py:
-            ventana.insertar_panel_funcionalidades(PanelFuncionalidades(ruta_csv))
-        """
-        self.splitter.replaceWidget(0, widget)
+        self.splitter.addWidget(widget)
         self.panel_funcionalidades = widget
 
     def insertar_panel_graficos(self, widget):
-        """
-        Persona 3 llama a este método para insertar el panel de gráficos.
-        Ejemplo en main.py:
-            ventana.insertar_panel_graficos(PanelGraficos(ruta_csv))
-        """
-        self.splitter.replaceWidget(1, widget)
+        self.splitter.addWidget(widget)
         self.panel_graficos = widget
-
-    def showEvent(self, event):
-        super().showEvent(event)
-        self.splitter.setSizes([370, 730])
+        self.splitter.setStretchFactor(0, 1)
+        self.splitter.setStretchFactor(1, 2)
 
     def mostrar_en_barra(self, mensaje: str, duracion_ms: int = 4000):
         """Utilidad compartida para mostrar mensajes en la barra de estado."""
