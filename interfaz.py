@@ -231,7 +231,7 @@ class LienzoGraficos(FigureCanvas):
         valores   = [e[1] for e in datos_idiomas[:5]]
 
         barras = ax.barh(etiquetas, valores, color=PALETA,
-                         edgecolor=t["borde"], linewidth=0.5)
+                         edgecolor=t["borde"], linewidth=0.5, height=0.55)
 
         maximo = max(valores) if valores else 1
         for b, v in zip(barras, valores):
@@ -258,9 +258,9 @@ class LienzoGraficos(FigureCanvas):
             return
 
         datos = list(datos_tipos)
-        if len(datos) > 6:
-            resto = sum(v for _, v in datos[6:])
-            datos = datos[:6] + [("Otros", resto)]
+        if len(datos) > 5:
+            resto = sum(v for _, v in datos[5:])
+            datos = datos[:5] + [("Otros", resto)]
 
         etiquetas = [e[0] for e in datos]
         valores   = [e[1] for e in datos]
@@ -368,8 +368,10 @@ class PanelGraficos(QWidget):
         self.setStyleSheet(f"background-color: {t['fondo']};")
         self._lbl_titulo.setStyleSheet(f"color: {t['texto']};")
         self.lbl_estado.setStyleSheet(f"color: {t['suave']}; font-size: 11px;")
-        self._lbl_sub1.setStyleSheet(f"color: {t['suave']}; font-size: 11px; font-weight: bold;")
-        self._lbl_sub2.setStyleSheet(f"color: {t['suave']}; font-size: 11px; font-weight: bold;")
+        estilo_sub = (f"color: {t['texto']}; font-size: 12px; font-weight: bold;"
+                      f" padding: 2px 0; border-left: 3px solid {t['acento']}; padding-left: 6px;")
+        self._lbl_sub1.setStyleSheet(estilo_sub)
+        self._lbl_sub2.setStyleSheet(estilo_sub)
         self._aplicar_estilo_btn_actualizar(t)
         self.canvas_idiomas.set_tema(oscuro)
         self.canvas_tipos.set_tema(oscuro)
@@ -402,7 +404,10 @@ class PanelGraficos(QWidget):
     @staticmethod
     def _lbl_sub(texto: str, t) -> QLabel:
         lbl = QLabel(texto)
-        lbl.setStyleSheet(f"color: {t['suave']}; font-size: 11px; font-weight: bold;")
+        lbl.setStyleSheet(
+            f"color: {t['texto']}; font-size: 12px; font-weight: bold;"
+            f" padding: 2px 0; border-left: 3px solid {t['acento']}; padding-left: 6px;"
+        )
         return lbl
 
 
