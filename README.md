@@ -4,7 +4,30 @@
 **Grupo:** Los silenciosos  
 **Dataset:** Top 1000 Most Watched YouTube Videos (2026) — [Kaggle](https://www.kaggle.com/datasets/mubashirsidiki/most-watched-yt-videos-rankings-2026)
 
-## Requisitos
+## Requisitos previos
+
+- Python **3.9 o superior** (`python3 --version` para verificar)
+- pip actualizado (`python3 -m pip install --upgrade pip`)
+
+## Instalación
+
+Se recomienda usar un entorno virtual para no afectar el sistema:
+
+```bash
+# 1. Clonar el repositorio
+git clone <url-del-repositorio>
+cd <carpeta-del-proyecto>
+
+# 2. Crear entorno virtual (opcional pero recomendado)
+python3 -m venv venv
+source venv/bin/activate        # Linux / macOS
+# venv\Scripts\activate         # Windows
+
+# 3. Instalar dependencias
+pip install -r requirements.txt
+```
+
+Si no usas entorno virtual, instala directamente:
 
 ```bash
 pip install PyQt5 pandas matplotlib
@@ -12,15 +35,20 @@ pip install PyQt5 pandas matplotlib
 
 ## Cómo ejecutar
 
+**Importante:** el programa debe correrse desde la carpeta raíz del proyecto (donde está `main.py`) para que encuentre el archivo `youtube_completo.csv`.
+
 ```bash
+# Interfaz gráfica (Entrega Final)
 python3 main.py
 ```
 
-Se abre la interfaz gráfica con dos paneles: funcionalidades a la izquierda (búsqueda, estadísticas, filtrado, exportar) y visualizaciones a la derecha (gráfico de idiomas y gráfico de tipos de contenido).
-
-Para ejecutar el menú de consola (Entrega 2):
+Al abrirse verás:
+- **Panel izquierdo:** búsqueda por término, estadísticas de vistas y likes, filtrado por umbral de vistas, historial de consultas, cargar y exportar resultados.
+- **Panel derecho:** gráfico de barras con los 5 idiomas más frecuentes y gráfico de torta con tipos de contenido.
+- **Barra inferior:** botón **"🌙 Tema oscuro"** para cambiar la apariencia, y botón **"✕ Salir"**.
 
 ```bash
+# Menú de consola (Entrega 2)
 python3 menu_consola.py
 ```
 
