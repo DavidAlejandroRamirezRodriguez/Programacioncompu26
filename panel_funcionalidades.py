@@ -32,7 +32,7 @@ from analisis import (
     idiomas,
     tipos_contenido,
 )
-from archivos import cargar_datos  # ajusta si tu función tiene otro nombre
+from archivos import cargar_filas_csv_completo
 
 # ── Colores (deben coincidir con los de PERSONA_1) ───────────────────────────
 COLOR_FONDO   = "#0F0F0F"
@@ -102,7 +102,7 @@ class PanelFuncionalidades(QWidget):
         self._ultimo_resultado = []   # Guarda la última lista para exportar
 
         # Cargamos los datos una vez en memoria (igual que en E2)
-        self._encabezados, self._filas = cargar_datos(ruta_csv)
+        self._encabezados, self._filas = cargar_filas_csv_completo(ruta_csv)
 
         self.setStyleSheet(f"background-color: {COLOR_FONDO};")
         self.setMinimumWidth(320)
