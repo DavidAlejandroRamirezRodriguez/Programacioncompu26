@@ -170,6 +170,10 @@ class VentanaPrincipal(QMainWindow):
         self.splitter.replaceWidget(1, widget)
         self.panel_graficos = widget
 
+    def showEvent(self, event):
+        super().showEvent(event)
+        self.splitter.setSizes([370, 730])
+
     def mostrar_en_barra(self, mensaje: str, duracion_ms: int = 4000):
         """Utilidad compartida para mostrar mensajes en la barra de estado."""
         self.statusBar().showMessage(mensaje, duracion_ms)
