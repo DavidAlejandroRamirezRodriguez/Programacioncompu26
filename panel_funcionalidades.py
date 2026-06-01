@@ -33,7 +33,12 @@ from analisis import (
     idiomas,
     tipos_contenido,
 )
-from archivos import cargar_filas_csv_completo, obtener_historial
+from archivos import (
+    cargar_filas_csv_completo,
+    cargar_resultados_csv,
+    cargar_resultados_json,
+    obtener_historial,
+)
 
 # ── Colores (deben coincidir con los de PERSONA_1) ───────────────────────────
 COLOR_FONDO   = "#0F0F0F"
@@ -189,8 +194,15 @@ class PanelFuncionalidades(QWidget):
         btn_historial.clicked.connect(self._accion_historial)
         layout.addWidget(btn_historial)
 
-        # ── Exportar CSV ─────────────────────────────────────────────────
+        # ── Guardar / Cargar resultados ──────────────────────────────────
         layout.addWidget(_separador())
+        layout.addWidget(self._lbl_seccion("Resultados guardados (E2)"))
+
+        btn_cargar = QPushButton("📂  Cargar resultados guardados")
+        btn_cargar.setStyleSheet(ESTILO_BTN_NORMAL)
+        btn_cargar.clicked.connect(self._accion_cargar_resultados)
+        layout.addWidget(btn_cargar)
+
         btn_exportar = QPushButton("💾  Exportar último resultado a CSV")
         btn_exportar.setStyleSheet(ESTILO_BTN_EXPORTAR)
         btn_exportar.clicked.connect(self._accion_exportar_csv)
@@ -295,6 +307,31 @@ class PanelFuncionalidades(QWidget):
             lineas.append(f"  • {fila[1]}  ({fila[-2]})")
         if len(resultados) > 30:
             lineas.append(f"  … y {len(resultados) - 30} más.")
+        self._mostrar("\n".join(lineas))
+
+    def _accion_cargar_resultados(self):
+        ruta, _ = QFileDialog.getOpenFileName(
+            self, "Cargar resultados guardados", "",
+            "Archivos CSV y JSON (*.csv *.json)"
+        )
+        if not ruta:
+            return
+
+        if ruta.lower().endswith(".json"):
+            filas = cargar_resultados_json(ruta)
+        else:
+            filas = cargar_resultados_csv(ruta)
+
+        if not filas:
+            self._mostrar(f"No se encontraron registros en '{ruta}'.")
+            return
+
+        self._ultimo_resultado = filas
+        lineas = [f"📂 {len(filas)} registro(s) cargados desde '{ruta}':\n"]
+        for fila in filas[:30]:
+            lineas.append(f"  • {fila[1] if len(fila) > 1 else fila}")
+        if len(filas) > 30:
+            lineas.append(f"  … y {len(filas) - 30} más.")
         self._mostrar("\n".join(lineas))
 
     def _accion_historial(self):
