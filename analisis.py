@@ -6,6 +6,8 @@ CSV directamente; en Entrega 2 el menú les pasa siempre el dataset completo.
 La carga en memoria para búsqueda y estadísticas centralizada está en archivos.py.
 """
 
+import pandas as pd
+
 # --- Columnas conocidas del CSV de YouTube (para el resumen automático E2) ---
 # Texto: acumulamos valores en un set para al final contar cuántos distintos hay.
 _COLUMNAS_TEXTO = frozenset({"title", "detected_language", "content_type"})
@@ -347,8 +349,6 @@ def tipos_contenido(ruta_archivo):
                 conteos_tipo[tipo] += 1
 
     return sorted(conteos_tipo.items(), key=lambda x: x[1], reverse=True)
-
-import pandas as pd
 
 def obtener_datos_graficos_pandas(ruta_archivo):
     # Cargamos el dataset con pandas como exige la guía para la entrega final

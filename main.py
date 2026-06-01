@@ -8,9 +8,8 @@ La lógica de análisis permanece en analisis.py y archivos.py.
 import sys
 from PyQt5.QtWidgets import QApplication
  
-from interfaz            import VentanaPrincipal, RUTA_CSV
+from interfaz              import VentanaPrincipal, PanelGraficos, RUTA_CSV
 from panel_funcionalidades import PanelFuncionalidades
-from interfaz              import PanelGraficos
  
  
 def main():
