@@ -84,14 +84,14 @@ class EncabezadoProyecto(QWidget):
         super().__init__(parent)
         self.setFixedHeight(64)
         t = TEMAS["claro"]
-        self.setStyleSheet(f"background-color: {t['panel']}; border-bottom: 1px solid {t['borde']};")
+        self.setStyleSheet(f"background-color: #EEF2FF; border-bottom: 2px solid {t['acento']};")
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(20, 0, 20, 0)
 
         self._lbl_proyecto = QLabel(NOMBRE_PROYECTO)
         self._lbl_proyecto.setFont(QFont("Segoe UI", 18, QFont.Bold))
-        self._lbl_proyecto.setStyleSheet(f"color: {t['texto']};")
+        self._lbl_proyecto.setStyleSheet(f"color: {t['acento']};")
 
         self._lbl_sep = QLabel("·")
         self._lbl_sep.setStyleSheet(f"color: {t['borde']}; font-size: 22px; margin: 0 8px;")
@@ -106,8 +106,9 @@ class EncabezadoProyecto(QWidget):
 
     def set_tema(self, oscuro: bool):
         t = TEMAS["oscuro"] if oscuro else TEMAS["claro"]
-        self.setStyleSheet(f"background-color: {t['panel']}; border-bottom: 1px solid {t['borde']};")
-        self._lbl_proyecto.setStyleSheet(f"color: {t['texto']};")
+        fondo_header = t["panel"] if oscuro else "#EEF2FF"
+        self.setStyleSheet(f"background-color: {fondo_header}; border-bottom: 2px solid {t['acento']};")
+        self._lbl_proyecto.setStyleSheet(f"color: {t['acento']};")
         self._lbl_sep.setStyleSheet(f"color: {t['borde']}; font-size: 22px; margin: 0 8px;")
         self._lbl_grupo.setStyleSheet(f"color: {t['suave']}; font-size: 13px;")
 
@@ -256,30 +257,43 @@ class LienzoGraficos(FigureCanvas):
             self.draw()
             return
 
-        etiquetas = [e[0] for e in datos_tipos]
-        valores   = [e[1] for e in datos_tipos]
+        datos = list(datos_tipos)
+        if len(datos) > 6:
+            resto = sum(v for _, v in datos[6:])
+            datos = datos[:6] + [("Otros", resto)]
+
+        etiquetas = [e[0] for e in datos]
+        valores   = [e[1] for e in datos]
         colores   = PALETA[:len(etiquetas)]
 
         if "Otros" in etiquetas:
             colores[etiquetas.index("Otros")] = "#999999"
 
-        _, texts, autotexts = ax.pie(
+        wedges, _, autotexts = ax.pie(
             valores,
-            labels=etiquetas,
             colors=colores,
             autopct="%1.1f%%",
             startangle=140,
-            pctdistance=0.78,
+            pctdistance=0.75,
             wedgeprops={"edgecolor": t["fondo"], "linewidth": 1.5},
         )
 
-        for text in texts:
-            text.set_color(t["texto"])
-            text.set_fontsize(8)
         for autotext in autotexts:
             autotext.set_color(t["texto"])
             autotext.set_fontsize(7)
             autotext.set_fontweight("bold")
+
+        ax.legend(
+            wedges, etiquetas,
+            loc="lower center",
+            bbox_to_anchor=(0.5, -0.15),
+            ncol=3,
+            fontsize=7,
+            framealpha=0.8,
+            facecolor=t["panel"],
+            edgecolor=t["borde"],
+            labelcolor=t["texto"],
+        )
 
         ax.set_title("Distribución por Tipo de Contenido", fontsize=10, fontweight="bold", pad=8)
         self.draw()
