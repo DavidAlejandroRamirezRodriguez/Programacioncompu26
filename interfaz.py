@@ -76,7 +76,7 @@ ESTILO_GLOBAL = f"""
         background-color: {COLOR_BORDE};
         width: 2px;
     }}
-
+"""
 
 class EncabezadoProyecto(QWidget):
     """
