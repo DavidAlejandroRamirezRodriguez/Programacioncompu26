@@ -1,20 +1,4 @@
-"""
-============================================================
-PERSONA 2 — Panel de funcionalidades (botones + campos)
-============================================================
-Responsabilidad:
-  - Campo de búsqueda + botón → llama analisis.buscar()
-  - Botón Estadísticas        → llama analisis.procesar_estadisticas()
-  - Botón Filtrar por vistas  → llama analisis.filtrar_por_vistas()  [E1]
-  - Botón Idiomas             → llama analisis.idiomas()              [E1]
-  - Botón Exportar CSV        → guarda el último resultado            [E2]
-  - Muestra resultados en un QTextEdit (solo texto, sin lógica)
 
-Cómo encaja en el proyecto:
-  main.py instancia PanelFuncionalidades y lo pasa a:
-      ventana.insertar_panel_funcionalidades(panel)
-============================================================
-"""
 
 import csv, io
 from PyQt5.QtWidgets import (
