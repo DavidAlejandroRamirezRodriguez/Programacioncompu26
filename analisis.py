@@ -146,6 +146,11 @@ def buscar(datos, termino):
             
     return encontrados
 
+def filtrar_por_umbral(datos, umbral):
+    """Retorna las filas cuyas vistas superan o igualan el umbral dado."""
+    return [fila for fila in datos if len(fila) >= 9 and convertir(fila[-2]) >= umbral]
+
+
 def filtrar_por_vistas(ruta_archivo):
     """Lista en consola los videos cuyas vistas superan un umbral dado por el usuario."""
     print("\n" + "-" * 30)

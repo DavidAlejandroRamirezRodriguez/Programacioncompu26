@@ -28,6 +28,7 @@ from PyQt5.QtGui import QFont
 # ── Importamos SOLO funciones de analisis.py y archivos.py ──────────────────
 from analisis import (
     buscar,
+    filtrar_por_umbral,
     procesar_estadisticas,
     idiomas,
     tipos_contenido,
@@ -275,12 +276,7 @@ class PanelFuncionalidades(QWidget):
             self._mostrar("⚠ El valor debe ser numérico (ej: 1000000).")
             return
 
-        # Filtramos sobre los datos en memoria (evita re-leer el archivo)
-        from analisis import convertir
-        resultados = [
-            fila for fila in self._filas
-            if len(fila) >= 9 and convertir(fila[-2]) >= umbral
-        ]
+        resultados = filtrar_por_umbral(self._filas, umbral)
         self._ultimo_resultado = resultados
         if not resultados:
             self._mostrar(f"Sin videos con ≥ {self._fmt(umbral)} vistas.")
