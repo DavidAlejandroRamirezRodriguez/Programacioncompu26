@@ -31,7 +31,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from analisis import obtener_datos_graficos_pandas
 
-# ── Constantes compartidas ───────────────────────────────────────────────────
 COLOR_FONDO   = "#0F0F0F"
 COLOR_PANEL   = "#1A1A1A"
 COLOR_TEXTO   = "#FFFFFF"
@@ -193,17 +192,6 @@ class LienzoGraficos(FigureCanvas):
 
         ax.set_title("Distribución por Tipo de Contenido", fontsize=10, fontweight="bold", pad=8)
         self.draw()
-
-def main():
-    """Punto de entrada de la interfaz gráfica."""
-     app = QApplication(sys.argv)
-    ventana = VentanaPrincipal()
-    panel_graf = PanelGraficos(RUTA_CSV)
-    ventana.insertar_panel_graficos(panel_graf)
-    ventana.mostrar_en_barra("DataLab Hub listo.")
-    ventana.show()
-    sys.exit(app.exec_())
-
 class EncabezadoProyecto(QWidget):
     """
     Banda superior con el nombre del proyecto y del grupo.
@@ -329,6 +317,17 @@ class VentanaPrincipal(QMainWindow):
         """Confirma el cierre limpiamente."""
         event.accept()
         
+def main():
+    """Punto de entrada de la interfaz gráfica."""
+    app = QApplication(sys.argv)
+    ventana = VentanaPrincipal()
+    panel_graf = PanelGraficos(RUTA_CSV)
+    ventana.insertar_panel_graficos(panel_graf)
+    ventana.mostrar_en_barra("DataLab Hub listo.")
+    ventana.show()
+    sys.exit(app.exec_())
+
+
 class LienzoGraficos(FigureCanvas):
     
     # Widget base que incrusta una figura Matplotlib dentro de PyQt5. No dibuja nada por sí mismo
